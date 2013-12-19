@@ -11,6 +11,8 @@ CodeIgniter 2.1 을 이용한 샘플 소스 입니다.
 
 - 데이터베이스를 사용한다면 application/config/database.php 파일을 열어서 데이터베이스 정보를 설정함.
 
+## 실제 구현해보기
+
 ### 01.
 도메인 설정은 local.codeigniter21.com 로 했다고 가정합니다. 실제 사용시 virtual host, hosts 파일을 설정해주세요.
 
