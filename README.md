@@ -368,3 +368,60 @@ $route['default_controller'] = 'pages/view';
 - http://local.codeigniter21.com/index.php/news 의 경로로 접근하여 리스트, 상세 뷰 페이지가 이상없이 뜨는지 확인합니다.
 
 
+
+### 05. news 생성 페이지 만들기
+[Tutorial - Create news items](http://ellislab.com/codeigniter%20/user-guide/tutorial/create_news_items.html) 를 참조하여 작성되었습니다.
+위의 링크는 한번 확인해 보고 코드를 작성해 주세요.
+
+- create form 페이지를 만듭니다. (application/views/news/create.php)
+
+
+```
+<h2>Create a news item</h2>
+
+<?php echo validation_errors(); ?>
+
+<?php echo form_open('news/create') ?>
+
+<label for="title">Title</label>
+<input type="input" name="title" /><br />
+
+<label for="text">Text</label>
+<textarea name="text"></textarea><br />
+
+<input type="submit" name="submit" value="Create news item" />
+
+</form>
+```
+
+- Model 수정
+
+```
+public function set_news()
+{
+	$this->load->helper('url');
+
+	$slug = url_title($this->input->post('title'), 'dash', TRUE);
+
+	$data = array(
+		'title' => $this->input->post('title'),
+		'slug' => $slug,
+		'text' => $this->input->post('text')
+	);
+
+	return $this->db->insert('news', $data);
+}
+```
+
+
+
+- Routing 정보 수정
+
+$route array 제일 위에 다음을 추가합니다.
+
+```
+$route['news/create'] = 'news/create';
+```
+
+
+
