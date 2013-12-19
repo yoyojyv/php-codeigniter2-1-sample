@@ -80,3 +80,10 @@ class Home extends CI_Controller {
 
 - http://local.codeigniter21.com/index.php/home 페이지를 열어 페이지가 정상적으로 뜨는지 확인.
 
+
+- 기본적으로 URL 은 다음과 같은 형식으로 이루어 짐
+
+```
+http://local.codeigniter21.com/[controller-class]/[controller-method]/[arguments]
+```
+
