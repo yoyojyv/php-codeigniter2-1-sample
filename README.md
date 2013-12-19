@@ -13,7 +13,7 @@ CodeIgniter 2.1 을 이용한 샘플 소스 입니다.
 
 ## 실제 구현해보기
 
-### 01.
+### 01. 시작
 도메인 설정은 local.codeigniter21.com 로 했다고 가정합니다. 실제 사용시 virtual host, hosts 파일을 설정해주세요.
 
 - 먼저 브라우저에서 local.codeigniter21.com 페이지가 잘 뜨는지 확인하세요.
