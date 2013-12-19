@@ -87,3 +87,122 @@ class Home extends CI_Controller {
 http://local.codeigniter21.com/[controller-class]/[controller-method]/[arguments]
 ```
 
+### 03. 로그찍기, Routing 이해하기
+
+- 먼저 로그를 찍어보기 위해 application/config/config.php 파일에서 로깅 설정을 다음과 같이 수정.
+
+- log_path 권한은 적절하게 설정해야 함. 권한이 없을시 파일이 생성되지 않음.
+
+```
+$config['log_threshold'] = 2;
+$config['log_path'] = 'application/logs/';
+```
+
+- 다음의 경로정보를 다시 한번 확인해 보세요.
+
+```
+http://local.codeigniter21.com/[controller-class]/[controller-method]/[arguments]
+```
+
+- Pages 컨트롤러를 생성합니다. application/controllers/pages.php 생성
+
+```
+<?php
+
+class Pages extends CI_Controller {
+
+	public function view($page = 'home')
+	{
+
+	}
+}
+```
+
+
+
+- http://local.codeigniter21.com/index.php/pages 페이지로 접근하여 404 페이지를 확인합니다.
+
+- http://local.codeigniter21.com/index.php/pages/view 페이지로 접근하면 빈 페이지가 뜹니다.
+
+
+이제 페이지가 나타나도록 작업을 합시다.
+
+먼저, 공통으로 쓰일 두개의 템플릿을 생성합니다.
+
+- application/views/templates/header.php 에 `header` 를 생성합니다.
+
+```
+<html>
+<head>
+	<title><?php echo $title ?> - CodeIgniter 2 Tutorial</title>
+</head>
+<body>
+	<h1>CodeIgniter 2 Tutorial</h1>
+```
+
+- application/views/templates/footer.php 에 `footer` 를 생성합니다.
+
+```
+<strong>&copy; 2011</strong>
+</body>
+</html>
+```
+
+다음으로 Page Controller 에 다음의 내역을 넣어줍니다. (application/controllers/pages.php)
+- 주석 부분에 로그 찍는 부분을 확인하세요.
+
+```
+<?php
+class Pages extends CI_Controller {
+
+    public function view($page = 'home') {
+
+        log_message('debug', '**page : '.$page);  // 'debug' 레벨로 로그 찍기
+
+        if ( ! file_exists('application/views/pages/'.$page.'.php'))
+        {
+            // Whoops, we don't have a page for that!
+            show_404();
+        }
+
+        $data['title'] = ucfirst($page); // Capitalize the first letter
+
+        $this->load->view('templates/header', $data);
+        $this->load->view('pages/'.$page, $data);
+        $this->load->view('templates/footer', $data);
+    }
+
+}
+```
+
+다음으로 application/views/pages/ 디렉토리에 view 파일인 `home.php`, `about.php` 두 개의 파일을 생성합니다.
+
+- home.php
+
+```
+<p>application/views/pages/home.php, <?=$title?></p>
+```
+
+- about.php
+
+```
+<p>application/views/pages/about.php, <?=$title?></p>
+```
+
+- 저장 후 http://local.codeigniter21.com/index.php/pages/view, http://local.codeigniter21.com/index.php/pages/view/about 페이지가 뜨는지 확인을 합니다.
+
+
+다음 너무 긴 URL 을 routing rule을 이용하여 줄여봅시다.
+
+- application/config/routes.php 파일에서 기존 $route array 를 제거하고 다음의 내역을 넣어줍니다.
+
+
+```
+$route['default_controller'] = 'pages/view';
+$route['(:any)'] = 'pages/view/$1';
+```
+
+
+http://local.codeigniter21.com/index.php, index.php/about 페이지에 접근하여 올바른 view 페이지가 뜨는지 확인합니다.
+
+
