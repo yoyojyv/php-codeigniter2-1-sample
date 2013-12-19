@@ -89,6 +89,8 @@ http://local.codeigniter21.com/[controller-class]/[controller-method]/[arguments
 
 ### 03. 로그찍기, Routing 이해하기
 
+다음은 [Tutorial − Static pages](http://ellislab.com/codeigniter%20/user-guide/tutorial/static_pages.html) 를 참조하여 작성되었습니다.
+
 - 먼저 로그를 찍어보기 위해 application/config/config.php 파일에서 로깅 설정을 다음과 같이 수정.
 
 - log_path 권한은 적절하게 설정해야 함. 권한이 없을시 파일이 생성되지 않음.
