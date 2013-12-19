@@ -208,3 +208,163 @@ $route['(:any)'] = 'pages/view/$1';
 http://local.codeigniter21.com/index.php, index.php/about 페이지에 접근하여 올바른 view 페이지가 뜨는지 확인합니다.
 
 
+
+### 04. Model 생성 후, 실제 돌아가는 간단한 어플리케이션 만들기(리스트, 상세 뷰 페이지)
+
+다음은 [Tutorial − News section](http://ellislab.com/codeigniter%20/user-guide/tutorial/news_section.html) 를 참조하여 작성되었습니다.
+
+작업하기에 앞서 먼저 routing 정보를 수정해 줍니다. 다음의 두개만 남기도 다 주석처리 해주세요
+
+```
+$route['default_controller'] = "home";
+$route['404_override'] = '';
+```
+
+Model 을 만들어 줍니다.
+
+- application/models 디렉토리에 news_model.php 를 생성합니다.
+
+
+```
+<?php
+class News_model extends CI_Model {
+
+	public function __construct()
+	{
+		$this->load->database();
+	}
+}
+```
+
+
+
+- `news` table 을 생성해 줍니다.
+
+```
+CREATE TABLE news (
+	id int(11) NOT NULL AUTO_INCREMENT,
+	title varchar(128) NOT NULL,
+	slug varchar(128) NOT NULL,
+	text text NOT NULL,
+	PRIMARY KEY (id),
+	KEY slug (slug)
+);
+```
+
+- database 와 model 이 세팅이 되었다면, 모든 post 내용을 가져오는 메소드가 필요합니다. 여기에는 CodeIgniter 의 database abstraction layer 를 이용합니다. [Active Record Class](http://ellislab.com/codeigniter%20/user-guide/database/active_record.html) 를 참조하세요. 다음의 코드를 model 에 추가합니다.
+
+
+```
+public function get_news($slug = FALSE)
+{
+	if ($slug === FALSE)
+	{
+		$query = $this->db->get('news');
+		return $query->result_array();
+	}
+
+	$query = $this->db->get_where('news', array('slug' => $slug));
+	return $query->row_array();
+}
+```
+
+위의 코드는 두개의 query 를 실행합니다. 하나는 모든 news record 를 가져오고, 다른 하나는 조건을 이용해 record 를 가져옵니다.
+
+
+
+News 보여주기.
+- News Controller 를 생성합니다. (application/controllers/news.php)
+
+```
+<?php
+class News extends CI_Controller {
+
+	public function __construct()
+	{
+		parent::__construct();
+		$this->load->model('news_model');
+	}
+
+  public function index()
+  {
+      $data['news'] = $this->news_model->get_news();
+      $data['title'] = 'News archive';
+
+      $this->load->view('templates/header', $data);
+      $this->load->view('news/index', $data);
+      $this->load->view('templates/footer');
+  }
+
+	public function view($slug)
+	{
+		$data['news'] = $this->news_model->get_news($slug);
+	}
+}
+```
+
+- view 파일을 생성합니다. (application/views/news/index.php)
+
+
+```
+<?php foreach ($news as $news_item): ?>
+
+    <h2><?php echo $news_item['title'] ?></h2>
+    <div id="main">
+        <?php echo $news_item['text'] ?>
+    </div>
+    <p><a href="news/<?php echo $news_item['slug'] ?>">View article</a></p>
+
+<?php endforeach ?>
+```
+
+- 리스트 페이지를 확인하기 전에 database에 다음의 테스트 데이터를 넣어줍니다.
+
+```
+insert into `codeigniter_test_db`.`news` ( `title`, `id`, `text`, `slug`) values ( 'title1', '0', 'text1', 'slug1');
+insert into `codeigniter_test_db`.`news` ( `title`, `id`, `text`, `slug`) values ( 'title2', '0', 'text2', 'slug2');
+
+```
+
+
+- 리스트 페이지가 정상적으로 출력되는지 확인후 controller 의 view 메소드를 다음과 같이 수정합니다.
+
+
+```
+public function view($slug)
+{
+	$data['news_item'] = $this->news_model->get_news($slug);
+
+	if (empty($data['news_item']))
+	{
+		show_404();
+	}
+
+	$data['title'] = $data['news_item']['title'];
+
+	$this->load->view('templates/header', $data);
+	$this->load->view('news/view', $data);
+	$this->load->view('templates/footer');
+}
+```
+
+
+- 해당 액션의 view 도 만들어 줍니다. (application/views/news/view.php)
+
+```
+<?php
+echo '<h2>'.$news_item['title'].'</h2>';
+echo $news_item['text'];
+```
+
+- 다음 routing 정보를 다음과 같이 수정합니다.
+
+```
+$route['news/(:any)'] = 'news/view/$1';
+$route['news'] = 'news';
+$route['(:any)'] = 'pages/view/$1';
+$route['default_controller'] = 'pages/view';
+```
+
+- http://local.codeigniter21.com/index.php/news 의 경로로 접근하여 리스트, 상세 뷰 페이지가 이상없이 뜨는지 확인합니다.
+
+
