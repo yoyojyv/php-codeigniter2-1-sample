@@ -1,0 +1,1 @@
+<p>application/views/pages/home.php, <?=$title?></p>
