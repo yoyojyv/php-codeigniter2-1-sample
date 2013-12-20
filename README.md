@@ -11,7 +11,10 @@ CodeIgniter 2.1 을 이용한 샘플 소스 입니다.
 
 - 데이터베이스를 사용한다면 application/config/database.php 파일을 열어서 데이터베이스 정보를 설정함.
 
-### 01.
+
+##실제 구현해보기
+
+### 01. 시작
 도메인 설정은 local.codeigniter21.com 로 했다고 가정합니다. 실제 사용시 virtual host, hosts 파일을 설정해주세요.
 
 - 먼저 브라우저에서 local.codeigniter21.com 페이지가 잘 뜨는지 확인하세요.
@@ -206,7 +209,6 @@ $route['(:any)'] = 'pages/view/$1';
 
 
 http://local.codeigniter21.com/index.php, index.php/about 페이지에 접근하여 올바른 view 페이지가 뜨는지 확인합니다.
-
 
 
 ### 04. Model 생성 후, 실제 돌아가는 간단한 어플리케이션 만들기(리스트, 상세 뷰 페이지)
